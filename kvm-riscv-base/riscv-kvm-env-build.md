@@ -217,6 +217,15 @@ $QEMU/qemu-system-riscv64 \
     -netdev user,id=usernet,hostfwd=tcp:127.0.0.1:7722-0.0.0.0:22 \
     -device virtio-net-pci,netdev=usernet \
     -rtc clock=host,base=utc
+    
+# x86
+## host
+mkdir /home/zq/shared
+-virtfs local,path=/home/zq/shared,mount_tag=host0,security_model=passthrough,id=host0 \
+
+## guest
+mkdir -p /home/zq/shared
+mount -t 9p -o trans=virtio,version=9p2000.L host0 /home/zq/shared
 ```
 
 > 首先，在宿主机上创建一个共享目录，然后使用QEMU的-virtfs选项将其挂载到虚拟机上。
@@ -224,7 +233,7 @@ $QEMU/qemu-system-riscv64 \
 > 在宿主机上创建一个共享目录，例如：
 >
 > ```shell
-> mkdir /root/repo/shared
+> mkdir /home/zq/shared
 > ```
 >
 > 将文件放入此共享目录。启动QEMU时，将共享目录挂载为一个虚拟文件系统，例如：
@@ -241,7 +250,10 @@ $QEMU/qemu-system-riscv64 \
 >
 > ```sh
 > mkdir -p /root/repo/shared
-> sudo mount -t 9p -o trans=virtio,version=9p2000.L host0 /root/repo/shared
+> mount -t 9p -o trans=virtio,version=9p2000.L host0 /root/repo/shared
+> 
+> cp /proc/kallsyms /root/repo/shared
+> cp /proc/modules /root/repo/shared
 > ```
 >
 > 其中，`-t` 选项指定了文件系统类型，`9p` 是QEMU支持的文件系统类型，`trans` 指定了传输协议，`version` 指定了文件系统版本，`host0` 是共享文件夹的标识符，`/root/repo/shared` 是共享文件夹在虚拟机中的挂载点。此时，`/root/repo/shared` 目录将指向宿主机上的 `/root/repo/shared` 目录，可以在两者之间传输文件。
