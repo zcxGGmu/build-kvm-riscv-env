@@ -233,7 +233,7 @@ mount -t 9p -o trans=virtio,version=9p2000.L host0 /home/zq/shared
 > 在宿主机上创建一个共享目录，例如：
 >
 > ```shell
-> mkdir /home/zq/shared
+> mkdir /root/repo/shared
 > ```
 >
 > 将文件放入此共享目录。启动QEMU时，将共享目录挂载为一个虚拟文件系统，例如：
