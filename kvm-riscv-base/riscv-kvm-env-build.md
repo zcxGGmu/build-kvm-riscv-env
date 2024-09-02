@@ -1,5 +1,20 @@
 # 1 qemu-host
 
+## 1.0 riscv-gnu-toolchain
+
+```shell
+# pre dependencies
+sudo apt install autoconf automake autotools-dev curl python3 python3-pip libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev ninja-build git cmake libglib2.0-dev
+
+# https://github.com/riscv-collab/riscv-gnu-toolchain/releases
+# add to ~/.zshrc
+export PATH="$PATH:$WS/install/bin"
+source ~/.zshrc
+riscv64-unknown-linux-gnu-gcc -v
+```
+
+
+
 ## 1.1 qemu build
 
 ```shell
@@ -120,7 +135,7 @@ gzip Ubuntu-Jammy-rootfs.tar
 rm -rf temp-rootfs
     
 # create rootfs.ext4
-dd if=/dev/zero of=rootfs.ext4 bs=1G count=20
+dd if=/dev/zero of=rootfs.ext4 bs=1G count=100
 mkfs.ext4 rootfs.ext4
 mkdir ./tmp
 sudo mount rootfs.ext4 ./tmp
@@ -128,7 +143,7 @@ sudo cp -rp ./temp-rootfs/* ./tmp/
 sudo umount ./tmp
 
 # create rootfs_guest.ext4
-dd if=/dev/zero of=rootfs_guest.ext4 bs=1G count=4
+dd if=/dev/zero of=rootfs_guest.ext4 bs=1G count=10
 mkfs.ext4 rootfs_guest.ext4
 mkdir ./tmp
 sudo mount rootfs_guest.ext4 ./tmp
