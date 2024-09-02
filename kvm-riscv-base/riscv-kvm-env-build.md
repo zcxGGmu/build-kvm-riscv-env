@@ -288,6 +288,7 @@ mount -t 9p -o trans=virtio,version=9p2000.L host0 /home/zq/shared
 
 ssh -p 7722 root@127.0.0.1
 scp -P 7722 root@127.0.0.1:/root/repo/linux/tools/perf/perf .
+scp -P 7722 -r ./apps root@127.0.0.1:/root/repo
 ```
 
 
