@@ -275,7 +275,20 @@ mount -t 9p -o trans=virtio,version=9p2000.L host0 /home/zq/shared
 >
 > > `tips`：每次重启QEMU虚拟机都要重新挂载，可以把上述 mount 命令做成开机自启。
 
+## 2.3 ssh with qemu-host
 
+```shell
+# 在本地用 tmux 开另一个terminal，不太建议，有一些界面乱码问题
+
+# ssh 连接
+    -drive file=$ROOTFS/rootfs.ext4,format=raw,id=hd0 \
+    -device virtio-blk-pci,drive=hd0  \
+    -netdev user,id=usernet,hostfwd=tcp:127.0.0.1:7722-0.0.0.0:22 \
+    -device e1000e,netdev=usernet
+
+ssh -p 7722 root@127.0.0.1
+scp -P 7722 root@127.0.0.1:/root/repo/linux/tools/perf/perf .
+```
 
 
 
