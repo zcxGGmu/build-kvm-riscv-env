@@ -198,9 +198,10 @@ insmod ./apps/kvm.ko
 export WS=`pwd`
 
 # some dependencies
-sudo apt install git gcc g++ wget flex bison bc cpio make pkg-config libglib2.0-dev libfdt-dev libpixman-1-dev zlib1g-dev libncurses-dev libssl-dev ninja-build python3-venv libslirp-dev
+apt install git gcc g++ wget flex bison bc cpio make pkg-config libglib2.0-dev libfdt-dev libpixman-1-dev zlib1g-dev libncurses-dev libssl-dev ninja-build python3-venv libslirp-dev -y
 
 # qemu build
+# wget https://mirrors.aliyun.com/blfs/conglomeration/qemu/qemu-9.0.0.tar.xz
 git clone --depth=1 -b ctr_upstream --recurse-submodules -j8 https://github.com/rajnesh-kanwal/qemu.git
 cd ./qemu
 mkdir build && cd ./build
