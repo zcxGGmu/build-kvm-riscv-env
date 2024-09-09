@@ -192,7 +192,9 @@ scp -P 7722 -r ./apps root@127.0.0.1:/root/repo
 insmod ./apps/kvm.ko
 ```
 
-## 2.2 qemu boot kvm-riscv-guest
+## 2.2 boot kvm-riscv-guest
+
+### 1)  qemu boot
 
 ```shell
 export WS=`pwd`
@@ -275,6 +277,37 @@ mount -t 9p -o trans=virtio,version=9p2000.L host0 /home/zq/shared
 > 其中，`-t` 选项指定了文件系统类型，`9p` 是QEMU支持的文件系统类型，`trans` 指定了传输协议，`version` 指定了文件系统版本，`host0` 是共享文件夹的标识符，`/root/repo/shared` 是共享文件夹在虚拟机中的挂载点。此时，`/root/repo/shared` 目录将指向宿主机上的 `/root/repo/shared` 目录，可以在两者之间传输文件。
 >
 > > `tips`：每次重启QEMU虚拟机都要重新挂载，可以把上述 mount 命令做成开机自启。
+
+### 2) kvmtool boot
+
+首先，需要准备好 libfdt 库，将其添加到工具链所在位置的 sysroot 文件夹中：
+
+```shell
+git clone git://git.kernel.org/pub/scm/utils/dtc/dtc.git
+cd dtc
+export ARCH=riscv
+export CROSS_COMPILE=riscv64-linux-gnu-
+export CC="${CROSS_COMPILE}gcc -mabi=lp64d -march=rv64gc" # riscv toolchain should be configured with --enable-multilib to support the most common -march/-mabi options if you build it from source code
+TRIPLET=$($CC -dumpmachine)
+SYSROOT=$($CC -print-sysroot)
+make libfdt  -j`nproc`
+make NO_PYTHON=1 NO_YAML=1 DESTDIR=$SYSROOT PREFIX=/usr LIBDIR=/usr/lib64/lp64d install-lib install-includes  -j`nproc`
+cd ..
+# install cross-compiled libfdt library at $SYSROOT/usr/lib64/lp64d directory of cross-compile toolchain
+```
+
+编译 kvmtools：
+
+```shell
+git clone https://git.kernel.org/pub/scm/linux/kernel/git/will/kvmtool.git
+cd kvmtool
+export ARCH=riscv
+export CROSS_COMPILE=riscv64-linux-gnu-
+cd kvmtool
+make lkvm-static  -j`nproc`
+${CROSS_COMPILE}strip lkvm-static
+cd ..
+```
 
 ## 2.3 ssh with qemu-host
 
